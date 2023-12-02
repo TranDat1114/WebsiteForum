@@ -4,7 +4,7 @@
 
     <hr />
 
-    foreach (var item in Model.Posts)
+    foreach (var item in Model.Posts.OrderByDescending(p=>p.CreatedDate))
     {
         <div class="row align-items-center">
             <div class="col-12 col-lg-10 row p-1 justify-content-between">
@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-12 row">
                     <div class="col-lg-4 p-1">
-                        <a class="blockquote-footer" asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@item.User.Id">@item.User.UserName</a>
+                        <a class="blockquote-footer" asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@item.ApplicationUser.Id">@item.ApplicationUser.UserName</a>
                     </div>
                     <div class="col-lg-4 p-1">
                         <p class="blockquote-footer">@item.CreatedDate</p>

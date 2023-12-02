@@ -51,6 +51,18 @@ namespace WebsiteForum.Data.DbInitializer
 
                 _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
 
+                _userManager.CreateAsync(new ApplicationUser()
+                {
+                    UserName = "jackandy249@gmail.com",
+                    Email = "jackandy249@gmail.com",
+                    PhoneNumber = "0985950723",
+                    LockoutEnabled = false,
+                }, @"Admin1114@").GetAwaiter().GetResult();
+
+                ApplicationUser demo = _db.ApplicationUsers.FirstOrDefault(p => p.Email == "jackandy249@gmail.com")!;
+
+                _userManager.AddToRoleAsync(demo, SD.Role_User).GetAwaiter().GetResult();
+
 
                 var topics = new List<Topic>()
                 {
@@ -179,10 +191,20 @@ namespace WebsiteForum.Data.DbInitializer
                     },
                     new()
                     {
+                        Title = "Social-media",
+                        Content = "These are websites that allow users to interact and connect with each other, such as Facebook, Twitter, or Instagram.",
+                        TopicId = 4,
+                        UserId = demo.Id,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = DateTime.Now,
+                        PostId=0,
+                    },
+                    new()
+                    {
                         Title = "Blog",
                         Content = "These are personal or business websites that provide the latest posts and information on a specific topic.",
                         TopicId = 5,
-                        UserId = user.Id,
+                        UserId = demo.Id,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
                         PostId=0,
@@ -192,7 +214,7 @@ namespace WebsiteForum.Data.DbInitializer
                         Title = "Manga",
                         Content = "I'm too lazy to write it down, I can't edit it anymore",
                         TopicId = 6,
-                        UserId = user.Id,
+                        UserId = demo.Id,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
                         PostId=0,
@@ -216,14 +238,31 @@ namespace WebsiteForum.Data.DbInitializer
                 {
                     new()
                     {
-                        ReplyId =1,
                         Content="I'm too lazy to write it down, I can't edit it anymore",
                         PostId = 1,
                         UserId = user.Id,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
-                    }
+                    },
+                    new()
+                    {
+                        Content="I'm too lazy to write it down, I can't edit it anymore",
+                        PostId = 2,
+                        UserId = user.Id,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = DateTime.Now,
+                    },
+                    new()
+                    {
+                        Content="I'm too lazy to write it down, I can't edit it anymore",
+                        PostId = 3,
+                        UserId = demo.Id,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = DateTime.Now,
+                    },
                 };
+                _db.Replies.AddRangeAsync(replies).GetAwaiter().GetResult();
+                _db.SaveChangesAsync().GetAwaiter().GetResult();
 
                 return;
             }

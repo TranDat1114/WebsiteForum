@@ -1,26 +1,53 @@
-﻿@model PostDetailsVM
+﻿@using Microsoft.AspNetCore.Identity
+@model PostDetailsVM
+@inject IHttpContextAccessor IHttpContextAccessor
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<p>@Model.Post.CreatedDate</p>
 
 <h1>
     @Model.Post.Title
 </h1>
 
 <p>
-    @Model.Post.Content
+    @Html.Raw(Model.Post.Content)
 </p>
 
-posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@Model.Post.User.Id">@Model.Post.User.UserName</a>
+posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@Model.Post.ApplicationUser.Id">@Model.Post.ApplicationUser.UserName</a>
 
 <hr />
 
 <h2>Replies</h2>
 
-@foreach (var item in Model.Replies)
+@if (SignInManager.IsSignedIn(User))
 {
-    <p>@item.Content</p>
+    <form method="post" asp-action="ReplyPost">
+        <input type="hidden" asp-for="Reply.PostId" value="@Model.Post.PostId" />
+        <textarea asp-for="Reply.Content" rows="3">
+                Write your reply here...
+            </textarea>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Reply</button>
+        </div>
+    </form>
+}
+else
+{
+    <p>You need to be logged in to reply</p>
+}
+
+
+
+<hr />
+
+
+@foreach (var item in Model.Replies.OrderByDescending(p => p.CreatedDate))
+{
+    <div>@Html.Raw(item.Content)</div>
     <div>
-        posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@item.User.Id" />
+         posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@item.ApplicationUser.Id">@item.ApplicationUser.UserName</a>
     </div>
-    <p>@item.CreatedDate</p>
     <p>@item.UpdatedDate</p>
     <hr />
 }

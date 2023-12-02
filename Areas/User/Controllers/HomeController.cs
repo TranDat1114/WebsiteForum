@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using WebsiteForum.Areas.User.Models;
 using WebsiteForum.Data;
+using WebsiteForum.Models;
 
 namespace WebsiteForum.Areas.User.Controllers
 {
@@ -15,20 +19,56 @@ namespace WebsiteForum.Areas.User.Controllers
         {
             var homeVM = new HomeVM()
             {
-                Posts = [.. _db.Posts.Include(p => p.Topic).Include(p => p.User)],
+                Posts = [.. _db.Posts.Include(p => p.Topic).Include(p => p.Replies).Include(p => p.ApplicationUser)],
                 Topics = [.. _db.Topics]
             };
-
 
             return View(homeVM);
         }
 
+        [Authorize]
+        public IActionResult CreateNewPost(int? id)
+        {
+            var createNewPostVM = new CreateNewPostVM()
+            {
+                Post = new Post()
+                {
+                    PostId = id ?? 0
+                },
+                Topics = [.. _db.Topics]
+            };
+
+            return View(createNewPostVM);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult CreateNewPost(CreateNewPostVM createNewPostVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                createNewPostVM.Topics = [.. _db.Topics];
+                return View(createNewPostVM);
+            }
+            else
+            {
+                createNewPostVM.Post.CreatedDate = DateTime.Now;
+                createNewPostVM.Post.UpdatedDate = DateTime.Now;
+
+                _db.Posts.Add(createNewPostVM.Post);
+                _db.SaveChanges();
+                return RedirectToAction(nameof(PostDetails), new { id = createNewPostVM.Post.PostId });
+            }
+        }
+
         public IActionResult PostDetails(int id)
         {
-            PostDetailsVM postDetailsVM = new PostDetailsVM()
+            _db.Posts.FirstOrDefault(p => p.PostId == id)!.Views++;
+            _db.SaveChanges();
+            PostDetailsVM postDetailsVM = new()
             {
-                Post = _db.Posts.Include(p => p.Topic).Include(p => p.User).FirstOrDefault(p => p.PostId == id)!,
-                Replies = [.. _db.Replies.Include(r => r.User).Where(r => r.PostId == id)]
+                Replies = _db.Replies.Where(p => p.PostId == id).Include(p => p.ApplicationUser).ToList(),
+                Post = _db.Posts.Include(p => p.Topic).Include(p => p.ApplicationUser).FirstOrDefault(p => p.PostId == id),
             };
 
             return View(postDetailsVM);
@@ -36,8 +76,27 @@ namespace WebsiteForum.Areas.User.Controllers
 
         public IActionResult PostsInTopic(int id)
         {
-            var topic = _db.Topics.Include(p => p.Posts).ThenInclude(p => p.User).FirstOrDefault(p => p.TopicId == id);
+            var topic = _db.Topics.Include(p => p.Posts).ThenInclude(p => p.ApplicationUser).FirstOrDefault(p => p.TopicId == id);
             return View(topic);
+        }
+
+        [HttpPost]
+        public IActionResult ReplyPost(Reply reply)
+        {
+            ClaimsIdentity? claimIdentity = (ClaimsIdentity)User.Identity;
+            if (claimIdentity == null)
+            {
+                return RedirectToAction(nameof(PostDetails));
+            }
+
+            reply.UserId = claimIdentity.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            reply.CreatedDate = DateTime.Now;
+            reply.UpdatedDate = DateTime.Now;
+
+            _db.Replies.Add(reply);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(PostDetails), new { id = reply.PostId });
+
         }
     }
 }

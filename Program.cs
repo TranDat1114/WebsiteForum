@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
+using SellWebsite.Utility.IdentityHandler;
 
 using WebsiteForum.Data;
 using WebsiteForum.Data.DbInitializer;
@@ -19,7 +22,7 @@ namespace WebsiteForum
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            
+
             builder.Services.AddSession(op =>
             {
                 op.IdleTimeout = TimeSpan.FromMinutes(60);
@@ -35,6 +38,7 @@ namespace WebsiteForum
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddRazorPages();
 
             //builder.Services.AddControllersWithViews();

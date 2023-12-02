@@ -11,7 +11,9 @@ namespace WebsiteForum.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public int Views { get; set; } = 0;
+        [ValidateNever]
         public DateTime UpdatedDate { get; set; }
+        [ValidateNever]
         public DateTime CreatedDate { get; set; }
         public int TopicId { get; set; }
         [ForeignKey("TopicId")]
@@ -21,7 +23,7 @@ namespace WebsiteForum.Models
         [ForeignKey("UserId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.Cascade)]
-        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
         [ValidateNever]
         public virtual List<Reply> Replies { get; set; } = new List<Reply>();

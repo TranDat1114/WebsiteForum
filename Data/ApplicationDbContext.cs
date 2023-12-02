@@ -11,7 +11,7 @@ namespace WebsiteForum.Data
             : base(options)
         {
         }
-        public DbSet<ApplicationUser> ApplicationUsers  { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Reply> Replies { get; set; }
         public DbSet<Topic> Topics { get; set; }
@@ -28,11 +28,11 @@ namespace WebsiteForum.Data
                 .WithMany(p => p.Replies)
                 .HasForeignKey(r => r.PostId);
             builder.Entity<Reply>()
-                .HasOne(r => r.User)
+                .HasOne(r => r.ApplicationUser)
                 .WithMany(u => u.Replies)
                 .HasForeignKey(r => r.UserId);
             builder.Entity<Post>()
-                .HasOne(p => p.User)
+                .HasOne(p => p.ApplicationUser)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(p => p.UserId);
 
