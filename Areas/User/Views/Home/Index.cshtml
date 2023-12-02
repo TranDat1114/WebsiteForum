@@ -1,0 +1,38 @@
+﻿@model HomeVM
+@{
+    <h1>New Posts</h1>
+
+    <hr />
+
+    foreach (var item in Model.Posts)
+    {
+        <div class="row align-items-center">
+            <div class="col-12 col-lg-10 row p-1 justify-content-between">
+                <div class="col-12">
+                    <a asp-area="User" asp-controller="Home" asp-action="PostDetails" asp-route-id="@item.PostId">@item.Title</a>
+                </div>
+                <div class="col-12 row">
+                    <div class="col-lg-4 p-1">
+                        <a class="blockquote-footer" asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@item.User.Id">@item.User.UserName</a>
+                    </div>
+                    <div class="col-lg-4 p-1">
+                        <p class="blockquote-footer">@item.CreatedDate</p>
+                    </div>
+                    <div class="col-lg-4 p-1">
+                        <a class="blockquote-footer" asp-area="User" asp-controller="Home" asp-action="PostsInTopic" asp-route-id="@item.Topic.TopicId">@item.Topic.Name</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 p-1 col-lg-1"><p class="text-nowrap">Replies: @item.Replies.Count()</p></div>
+            <div class="col-6 p-1 col-lg-1"><p class="text-nowrap">Views: @item.Views</p></div>
+        </div>
+        <hr />
+    }
+
+    <h2>Topics</h2>
+
+    @foreach (var item in Model.Topics)
+    {
+        <p>@item.Name</p>
+    }
+}

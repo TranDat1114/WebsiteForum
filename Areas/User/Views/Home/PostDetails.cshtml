@@ -1,0 +1,26 @@
+﻿@model PostDetailsVM
+
+<h1>
+    @Model.Post.Title
+</h1>
+
+<p>
+    @Model.Post.Content
+</p>
+
+posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@Model.Post.User.Id">@Model.Post.User.UserName</a>
+
+<hr />
+
+<h2>Replies</h2>
+
+@foreach (var item in Model.Replies)
+{
+    <p>@item.Content</p>
+    <div>
+        posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="UserDetails" asp-route-id="@item.User.Id" />
+    </div>
+    <p>@item.CreatedDate</p>
+    <p>@item.UpdatedDate</p>
+    <hr />
+}
