@@ -3,6 +3,8 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 
+using WebsiteForum.Shared;
+
 namespace WebsiteForum.Models
 {
     public class Post
@@ -11,6 +13,7 @@ namespace WebsiteForum.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public int Views { get; set; } = 0;
+        public string Status { get; set; } = SD.Status_Pending;
         [ValidateNever]
         public DateTime UpdatedDate { get; set; }
         [ValidateNever]

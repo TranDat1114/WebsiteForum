@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using WebsiteForum.Models;
+using WebsiteForum.Shared;
 
 namespace WebsiteForum.Data
 {
@@ -35,6 +36,10 @@ namespace WebsiteForum.Data
                 .HasOne(p => p.ApplicationUser)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(p => p.UserId);
+            builder.Entity<Post>()
+                .Property(e => e.Status).HasDefaultValue(SD.Status_Pending);
+            builder.Entity<ApplicationUser>()
+                .Property(e => e.ProfilePicture).HasDefaultValue(@$"\assets\Profile\default.png");
 
             //builder.Entity<Topic>().HasData(
             //    new Topic

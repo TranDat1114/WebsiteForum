@@ -1,10 +1,22 @@
-﻿@model HomeVM
-@{
-    <h1>New Posts</h1>
+﻿@model ProfileVM
 
-    <hr />
+<h2>Profile</h2>
+<div class="row">
+    <div class="col-12 col-lg-3">
+        <img src="@Model.applicationUser.ProfilePicture" class="w-100 rounded-1 m-auto" style="height:200px; width:200px; object-fit:cover" />
 
-    foreach (var item in Model.Posts.OrderByDescending(p=>p.CreatedDate))
+    </div>
+    <div class="col-12 col-lg-auto">
+        <p>Username: @Model.applicationUser.UserName</p>
+        <p>Email: @Model.applicationUser.Email</p>
+
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    @foreach (var item in Model.posts.OrderByDescending(p => p.CreatedDate))
     {
         <div class="row align-items-center">
             <div class="col-12 col-lg-10 row p-1 justify-content-between">
@@ -29,10 +41,13 @@
         <hr />
     }
 
-    <h2>Topics</h2>
+</div>
 
-    @foreach (var item in Model.Topics)
-    {
-        <p>@item.Name</p>
+
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial" />
     }
+    <script src="~/js/updateImageAfterInput.js"></script>
 }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WebsiteForum.Areas.User.Models;
 using WebsiteForum.Data;
 using WebsiteForum.Models;
+using WebsiteForum.Shared;
 
 namespace WebsiteForum.Areas.User.Controllers
 {
@@ -19,7 +20,7 @@ namespace WebsiteForum.Areas.User.Controllers
         {
             var homeVM = new HomeVM()
             {
-                Posts = [.. _db.Posts.Include(p => p.Topic).Include(p => p.Replies).Include(p => p.ApplicationUser)],
+                Posts = [.. _db.Posts.Where(p => p.Status == SD.Status_Approved).Include(p => p.Topic).Include(p => p.Replies).Include(p => p.ApplicationUser)],
                 Topics = [.. _db.Topics]
             };
 
@@ -67,8 +68,8 @@ namespace WebsiteForum.Areas.User.Controllers
             _db.SaveChanges();
             PostDetailsVM postDetailsVM = new()
             {
-                Replies = _db.Replies.Where(p => p.PostId == id).Include(p => p.ApplicationUser).ToList(),
-                Post = _db.Posts.Include(p => p.Topic).Include(p => p.ApplicationUser).FirstOrDefault(p => p.PostId == id),
+                Replies = [.. _db.Replies.Where(p => p.PostId == id).Include(p => p.ApplicationUser)],
+                Post = _db.Posts.Where(p => p.Status == SD.Status_Approved).Include(p => p.Topic).Include(p => p.ApplicationUser).FirstOrDefault(p => p.PostId == id),
             };
 
             return View(postDetailsVM);

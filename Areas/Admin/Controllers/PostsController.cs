@@ -11,22 +11,23 @@ using WebsiteForum.Models;
 namespace WebsiteForum.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class TopicsController : Controller
+    public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TopicsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Admin/Topics
+        // GET: Admin/Posts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Topics.ToListAsync());
+            var applicationDbContext = _context.Posts.Include(p => p.ApplicationUser).Include(p => p.Topic);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Admin/Topics/Details/5
+        // GET: Admin/Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +35,45 @@ namespace WebsiteForum.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var topic = await _context.Topics
-                .FirstOrDefaultAsync(m => m.TopicId == id);
-            if (topic == null)
+            var post = await _context.Posts
+                .Include(p => p.ApplicationUser)
+                .Include(p => p.Topic)
+                .FirstOrDefaultAsync(m => m.PostId == id);
+            if (post == null)
             {
                 return NotFound();
             }
 
-            return View(topic);
+            return View(post);
         }
 
-        // GET: Admin/Topics/Create
+        // GET: Admin/Posts/Create
         public IActionResult Create()
         {
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            ViewData["TopicId"] = new SelectList(_context.Topics, "TopicId", "TopicId");
             return View();
         }
 
-        // POST: Admin/Topics/Create
+        // POST: Admin/Posts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TopicId,Name,Description")] Topic topic)
+        public async Task<IActionResult> Create([Bind("PostId,Title,Content,Views,Status,UpdatedDate,CreatedDate,TopicId,UserId")] Post post)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(topic);
+                _context.Add(post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(topic);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", post.UserId);
+            ViewData["TopicId"] = new SelectList(_context.Topics, "TopicId", "TopicId", post.TopicId);
+            return View(post);
         }
 
-        // GET: Admin/Topics/Edit/5
+        // GET: Admin/Posts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +81,24 @@ namespace WebsiteForum.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var topic = await _context.Topics.FindAsync(id);
-            if (topic == null)
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
             {
                 return NotFound();
             }
-            return View(topic);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", post.UserId);
+            ViewData["TopicId"] = new SelectList(_context.Topics, "TopicId", "TopicId", post.TopicId);
+            return View(post);
         }
 
-        // POST: Admin/Topics/Edit/5
+        // POST: Admin/Posts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,Description")] Topic topic)
+        public async Task<IActionResult> Edit(int id, [Bind("PostId,Title,Content,Views,Status,UpdatedDate,CreatedDate,TopicId,UserId")] Post post)
         {
-            if (id != topic.TopicId)
+            if (id != post.PostId)
             {
                 return NotFound();
             }
@@ -98,12 +107,12 @@ namespace WebsiteForum.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(topic);
+                    _context.Update(post);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TopicExists(topic.TopicId))
+                    if (!PostExists(post.PostId))
                     {
                         return NotFound();
                     }
@@ -114,10 +123,12 @@ namespace WebsiteForum.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(topic);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", post.UserId);
+            ViewData["TopicId"] = new SelectList(_context.Topics, "TopicId", "TopicId", post.TopicId);
+            return View(post);
         }
 
-        // GET: Admin/Topics/Delete/5
+        // GET: Admin/Posts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,34 +136,36 @@ namespace WebsiteForum.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var topic = await _context.Topics
-                .FirstOrDefaultAsync(m => m.TopicId == id);
-            if (topic == null)
+            var post = await _context.Posts
+                .Include(p => p.ApplicationUser)
+                .Include(p => p.Topic)
+                .FirstOrDefaultAsync(m => m.PostId == id);
+            if (post == null)
             {
                 return NotFound();
             }
 
-            return View(topic);
+            return View(post);
         }
 
-        // POST: Admin/Topics/Delete/5
+        // POST: Admin/Posts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var topic = await _context.Topics.FindAsync(id);
-            if (topic != null)
+            var post = await _context.Posts.FindAsync(id);
+            if (post != null)
             {
-                _context.Topics.Remove(topic);
+                _context.Posts.Remove(post);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TopicExists(int id)
+        private bool PostExists(int id)
         {
-            return _context.Topics.Any(e => e.TopicId == id);
+            return _context.Posts.Any(e => e.PostId == id);
         }
     }
 }
