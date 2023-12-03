@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using WebsiteForum.Shared
 @model PostDetailsVM
 @inject IHttpContextAccessor IHttpContextAccessor
 @inject SignInManager<IdentityUser> SignInManager
@@ -6,6 +7,12 @@
 
 <p>@Model.Post.CreatedDate</p>
 
+@if (Model.Post.Status == SD.Status_Pending)
+{
+    <h4 class="text-warning">
+        Waiting for approval
+    </h4>
+}
 <h1>
     @Model.Post.Title
 </h1>
@@ -20,21 +27,29 @@ posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="Profile" 
 
 <h2>Replies</h2>
 
-@if (SignInManager.IsSignedIn(User))
+@if (Model.Post.Status == SD.Status_Pending)
 {
-    <form method="post" asp-action="ReplyPost">
-        <input type="hidden" asp-for="Reply.PostId" value="@Model.Post.PostId" />
-        <textarea asp-for="Reply.Content" rows="3">
-                            Write your reply here...
-                        </textarea>
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">Reply</button>
-        </div>
-    </form>
+    <p>There are no replies yet</p>
 }
 else
 {
-    <p>You need to be logged in to reply</p>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form method="post" asp-action="ReplyPost">
+            <input type="hidden" asp-for="Reply.PostId" value="@Model.Post.PostId" />
+            <textarea asp-for="Reply.Content" rows="3">
+                                        Write your reply here...
+                                    </textarea>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Reply</button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <p>You need to be logged in to reply</p>
+    }
 }
 
 <hr />

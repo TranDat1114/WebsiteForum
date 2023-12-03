@@ -1,0 +1,84 @@
+﻿@model IEnumerable<WebsiteForum.Models.Post>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="mw-100 overflow-x-scroll">
+    <table data-order='[[ 1, "asc" ]]' data-page-length='25' class="table table table-striped scroll-table" id="tblData">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Views)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Topic)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ApplicationUser)
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderByDescending(p => p.CreatedDate))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Views)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Topic.Name)
+                    </td>
+                    <td class="text-truncate" style="max-width:200px;">
+                        @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-warning" asp-area="User" asp-controller="Home" asp-action="PostDetails" asp-route-id="@item.PostId">ViewDetails</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-success" asp-action="Approve" asp-route-id="@item.PostId">Approve</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" asp-action="Reject" asp-route-id="@item.PostId">Reject</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="/js/dataTable.js"></script>
+}
+
+

@@ -2,6 +2,7 @@
 @using Newtonsoft.Json;
 @using WebsiteForum.Data;
 @using Microsoft.AspNetCore.Http;
+@using WebsiteForum.Shared
 @inject IHttpContextAccessor IHttpContextAccessor
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -15,6 +16,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebsiteForum.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+
     <script src="https://cdn.tiny.cloud/1/psxbu9k80neqeygdiigjva207f3bgug2ynh2gx1kj0uk8jqu/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
@@ -38,10 +42,26 @@
                                     LastPost
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item">New Posts</a></li>
+                                    <li><a class="dropdown-item" asp-area="User" asp-controller="Home" asp-action="Index">New Posts</a></li>
                                 </ul>
                             </div>
                         </li>
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li>
+                                <div class="dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" asp-area="Admin" asp-controller="Home" asp-action="" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Admin
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Topics" asp-action="Index">Topics</a></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Posts" asp-action="Index">Posts</a></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Posts" asp-action="WaitingForApproval">Pending Posts</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
                     </ul>
 
                     <partial name="_LoginPartial" />
@@ -49,8 +69,11 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container m-auto">
         <main role="main" class="pb-3">
+            @{
+                <partial name="_Notification" />
+            }
             @RenderBody()
         </main>
     </div>
@@ -72,6 +95,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -69,7 +69,7 @@ namespace WebsiteForum.Areas.User.Controllers
             PostDetailsVM postDetailsVM = new()
             {
                 Replies = [.. _db.Replies.Where(p => p.PostId == id).Include(p => p.ApplicationUser)],
-                Post = _db.Posts.Where(p => p.Status == SD.Status_Approved).Include(p => p.Topic).Include(p => p.ApplicationUser).FirstOrDefault(p => p.PostId == id),
+                Post = _db.Posts.Include(p => p.Topic).Include(p => p.ApplicationUser).FirstOrDefault(p => p.PostId == id),
             };
 
             return View(postDetailsVM);

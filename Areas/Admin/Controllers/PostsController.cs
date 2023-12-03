@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 using WebsiteForum.Data;
 using WebsiteForum.Models;
 using WebsiteForum.Shared;
@@ -29,6 +30,50 @@ namespace WebsiteForum.Areas.Admin.Controllers
         {
             var applicationDbContext = _context.Posts.Include(p => p.ApplicationUser).Include(p => p.Topic);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        //Get: Admin/Wait WaitingForApproval
+        public async Task<IActionResult> WaitingForApproval()
+        {
+            var applicationDbContext = _context.Posts.Where(p => p.Status == SD.Status_Pending).Include(p => p.ApplicationUser).Include(p => p.Topic);
+            return View(await applicationDbContext.ToListAsync());
+        }
+        public async Task<IActionResult> Approve(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _context.Posts.FirstOrDefaultAsync(m => m.PostId == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            post.Status = SD.Status_Approved;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(WaitingForApproval));
+
+        }
+
+        public async Task<IActionResult> Reject(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _context.Posts.FirstOrDefaultAsync(m => m.PostId == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            post.Status = SD.Status_Rejected;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(WaitingForApproval));
+
         }
 
         // GET: Admin/Posts/Details/5
