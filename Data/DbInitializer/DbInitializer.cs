@@ -61,7 +61,7 @@ namespace WebsiteForum.Data.DbInitializer
                     LockoutEnabled = false,
                 }, @"Admin1114@").GetAwaiter().GetResult();
 
-                ApplicationUser demo = _db.ApplicationUsers.FirstOrDefault(p => p.Email == "jackandy249@gmail.com")!;
+                ApplicationUser demo = _db.ApplicationUsers.FirstOrDefault(p => p.Email == "hihello249@gmail.com")!;
 
                 _userManager.AddToRoleAsync(demo, SD.Role_User).GetAwaiter().GetResult();
 

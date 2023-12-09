@@ -13,6 +13,8 @@ namespace WebsiteForum.Models
         public DateOnly JoinDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public string ProfilePicture { get; set; } = "default.png";
 
+        public bool IsBan { get; set; } = false;
+
         [ValidateNever]
         public virtual List<Post> Posts { get; set; } = new List<Post>();
         [ValidateNever]

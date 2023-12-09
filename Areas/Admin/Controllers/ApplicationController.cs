@@ -23,7 +23,23 @@ namespace WebsiteForum.Areas.Admin.Controllers
             return View(applicationUserVM);
         }
         
-        public async Task<IActionResult> Delete(string? id)
+        public async Task<IActionResult> Ban(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _context.ApplicationUsers
+                        .FirstOrDefaultAsync(m => m.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            return View(post);
+        }
+        public async Task<IActionResult> UnBan(string? id)
         {
             if (id == null)
             {
@@ -40,15 +56,28 @@ namespace WebsiteForum.Areas.Admin.Controllers
             return View(post);
         }
 
-        // POST: Admin/Posts/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Ban")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> BanConfirmed(string id)
         {
             var post = await _context.ApplicationUsers.FindAsync(id);
             if (post != null)
             {
-                _context.ApplicationUsers.Remove(post);
+                post.IsBan = true;
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ActionName("UnBan")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnBanConfirmed(string id)
+        {
+            var post = await _context.ApplicationUsers.FindAsync(id);
+            if (post != null)
+            {
+                post.IsBan = false;
             }
 
             await _context.SaveChangesAsync();
