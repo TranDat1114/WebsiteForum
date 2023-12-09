@@ -73,7 +73,6 @@ namespace WebsiteForum.Areas.Admin.Controllers
             post.Status = SD.Status_Rejected;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(WaitingForApproval));
-
         }
 
         // GET: Admin/Posts/Details/5

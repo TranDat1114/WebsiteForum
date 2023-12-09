@@ -34,5 +34,11 @@
     @foreach (var item in Model.Topics)
     {
         <p>@item.Name</p>
+        <div>
+            @foreach (var post in item.Posts.Take(10))
+            {
+                <p class="ms-4">@post.Title</p>
+            }</div>
+    <hr />
     }
 }

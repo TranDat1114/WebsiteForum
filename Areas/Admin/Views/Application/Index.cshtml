@@ -1,0 +1,54 @@
+﻿@using WebsiteForum.Areas.User.Models
+@model ApplicationUserVM
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="">
+    <table class="table table-striped" id="tblData">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Profile Picture
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ApplicationUsers)
+            {
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td class="text-truncate" style="max-width:250px;">
+                        @item.ProfilePicture
+                    </td>
+                    <td>
+                        @item.Email
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts {
+    <script src="/js/dataTable.js"></script>
+}

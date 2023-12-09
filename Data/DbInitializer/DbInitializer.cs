@@ -44,7 +44,7 @@ namespace WebsiteForum.Data.DbInitializer
                     UserName = "admin@admin.com",
                     Email = "admin@admin.com",
                     ProfilePicture = @"\assets\Profile\default.png",
-                    PhoneNumber = "0985950723",
+                    PhoneNumber = "12313123",
                     LockoutEnabled = false,
                 }, @"Admin1114@").GetAwaiter().GetResult();
 
@@ -54,10 +54,10 @@ namespace WebsiteForum.Data.DbInitializer
 
                 _userManager.CreateAsync(new ApplicationUser()
                 {
-                    UserName = "jackandy249@gmail.com",
+                    UserName = "hihello249@gmail.com",
                     ProfilePicture = @"\assets\Profile\default.png",
-                    Email = "jackandy249@gmail.com",
-                    PhoneNumber = "0985950723",
+                    Email = "hihello249@gmail.com",
+                    PhoneNumber = "12312321",
                     LockoutEnabled = false,
                 }, @"Admin1114@").GetAwaiter().GetResult();
 

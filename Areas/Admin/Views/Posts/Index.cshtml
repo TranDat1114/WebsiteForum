@@ -9,8 +9,8 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<div class="mw-100 overflow-x-scroll">
-    <table data-order='[[ 1, "asc" ]]' data-page-length='25' class="table table table-striped scroll-table" id="tblData">
+<div class="">
+    <table  class="table table-striped" id="tblData">
     <thead>
         <tr>
             <th>
@@ -25,9 +25,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
-            </th>
+          
             <th>
                 @Html.DisplayNameFor(model => model.CreatedDate)
             </th>
@@ -35,11 +33,11 @@
                 @Html.DisplayNameFor(model => model.Topic)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ApplicationUser)
+                @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
             </th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th>Edit</th>
+            <th>Details</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -58,9 +56,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UpdatedDate)
-                </td>
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
@@ -68,7 +64,7 @@
                     @Html.DisplayFor(modelItem => item.Topic.TopicId)
                 </td>
                 <td class="text-truncate" style="max-width:200px;">
-                    @Html.DisplayFor(modelItem => item.ApplicationUser.Id)
+                    @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.PostId">Edit</a>

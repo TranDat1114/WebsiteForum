@@ -4,9 +4,7 @@
 @inject IHttpContextAccessor IHttpContextAccessor
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
 <p>@Model.Post.CreatedDate</p>
-
 @if (Model.Post.Status == SD.Status_Pending)
 {
     <h4 class="text-warning">
@@ -16,31 +14,26 @@
 <h1>
     @Model.Post.Title
 </h1>
-
 <p>
     @Html.Raw(Model.Post.Content)
 </p>
-
-posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="Profile" asp-route-id="@Model.Post.ApplicationUser.Id">@Model.Post.ApplicationUser.UserName</a>
-
+posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="Profile"
+    asp-route-id="@Model.Post.ApplicationUser.Id">@Model.Post.ApplicationUser.UserName</a>
 <hr />
-
 <h2>Replies</h2>
-
 @if (Model.Post.Status == SD.Status_Pending)
 {
     <p>There are no replies yet</p>
 }
 else
 {
-
     @if (SignInManager.IsSignedIn(User))
     {
         <form method="post" asp-action="ReplyPost">
             <input type="hidden" asp-for="Reply.PostId" value="@Model.Post.PostId" />
             <textarea asp-for="Reply.Content" rows="3">
-                                        Write your reply here...
-                                    </textarea>
+                                                Write your reply here...
+                                            </textarea>
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Reply</button>
             </div>
@@ -51,23 +44,21 @@ else
         <p>You need to be logged in to reply</p>
     }
 }
-
 <hr />
-
 @foreach (var item in Model.Replies.OrderByDescending(p => p.CreatedDate))
 {
     <div class="row ">
         <div class="col-6 col-lg-3 p-2">
             <img src="@item.ApplicationUser.ProfilePicture" class="rounded-circle" height="100" width="100" />
             <p>
-                posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="Profile" asp-route-id="@item.ApplicationUser.Id">@item.ApplicationUser.UserName</a>
+                posted by: <a asp-area="User" asp-controller="UserProfile" asp-action="Profile"
+                    asp-route-id="@item.ApplicationUser.Id">@item.ApplicationUser.UserName</a>
             </p>
             <p>@item.UpdatedDate</p>
         </div>
         <div class="col-auto p-2">
             @Html.Raw(item.Content)
         </div>
-
     </div>
     <hr />
 }

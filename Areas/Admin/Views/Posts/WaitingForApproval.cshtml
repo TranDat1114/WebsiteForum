@@ -1,16 +1,11 @@
 ﻿@model IEnumerable<WebsiteForum.Models.Post>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Waiting Approve Post";
 }
-
 <h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <div class="mw-100 overflow-x-scroll">
-    <table data-order='[[ 1, "asc" ]]' data-page-length='25' class="table table table-striped scroll-table" id="tblData">
+    <table data-order='[[ 1, "asc" ]]' data-page-length='25' class="table table table-striped scroll-table"
+        id="tblData">
         <thead>
             <tr>
                 <th>
@@ -63,7 +58,8 @@
                         @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
                     </td>
                     <td>
-                        <a class="btn btn-outline-warning" asp-area="User" asp-controller="Home" asp-action="PostDetails" asp-route-id="@item.PostId">ViewDetails</a>
+                        <a class="btn btn-outline-warning" asp-area="User" asp-controller="Home" asp-action="PostDetails"
+                            asp-route-id="@item.PostId">ViewDetails</a>
                     </td>
                     <td>
                         <a class="btn btn-outline-success" asp-action="Approve" asp-route-id="@item.PostId">Approve</a>
@@ -76,9 +72,6 @@
         </tbody>
     </table>
 </div>
-
 @section Scripts {
     <script src="/js/dataTable.js"></script>
 }
-
-
